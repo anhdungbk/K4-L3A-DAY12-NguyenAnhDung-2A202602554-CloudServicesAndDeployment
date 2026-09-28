@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import ssl
+import time
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -73,8 +75,9 @@ def _request_completion(messages: list[ChatMessage]) -> str:
 
 @router.post("/chat")
 def chat(payload: ChatRequest):
-    """Gọi OpenRouter, tách biệt hoàn toàn khỏi endpoint /ask của CP."""
-    return {"answer": _request_completion(payload.messages)}
+    """Phản hồi demo cho giao diện, tách biệt hoàn toàn khỏi endpoint /ask của CP."""
+    time.sleep(random.uniform(0, 2))
+    return {"answer": "HIHI chưa có api key"}
 
 
 @router.get("/", response_class=HTMLResponse)
