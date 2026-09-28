@@ -17,7 +17,7 @@ from contextlib import asynccontextmanager
 from functools import lru_cache
 
 from fastapi import Depends, FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 
 from utils.mock_llm import ask_llm
@@ -73,6 +73,11 @@ class AskRequest(BaseModel):
 # ─────────────────────────────────────────────────────────────
 # Health & readiness
 # ─────────────────────────────────────────────────────────────
+@app.get("/", response_class=PlainTextResponse)
+def home():
+    return "HELLO WORLD"
+
+
 @app.get("/health")
 def health():
     """Liveness probe — process còn sống không?
