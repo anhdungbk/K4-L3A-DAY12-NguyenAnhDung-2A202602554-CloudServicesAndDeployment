@@ -17,12 +17,13 @@ from contextlib import asynccontextmanager
 from functools import lru_cache
 
 from fastapi import Depends, FastAPI
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from utils.mock_llm import ask_llm
 
 from .auth import verify_api_key
+from .chat_ui import router as chat_router
 from .config import get_settings
 from .cost_guard import CostGuard
 from .lifecycle import lifecycle
@@ -64,6 +65,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="Day 12 Production Agent", version=SERVICE_VERSION, lifespan=lifespan)
+app.include_router(chat_router)
 
 
 class AskRequest(BaseModel):
@@ -73,26 +75,6 @@ class AskRequest(BaseModel):
 # ─────────────────────────────────────────────────────────────
 # Health & readiness
 # ─────────────────────────────────────────────────────────────
-@app.get("/", response_class=HTMLResponse)
-def home():
-    return """<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dance</title>
-    <style>
-      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-      img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    </style>
-  </head>
-  <body>
-    <img src="https://usagif.com/wp-content/uploads/gify/39-anime-dance-girl-usagif.gif"
-         alt="Anime dance">
-  </body>
-</html>"""
-
-
 @app.get("/health")
 def health():
     """Liveness probe — process còn sống không?
